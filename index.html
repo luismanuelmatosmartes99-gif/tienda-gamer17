@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusGear</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav>
+    <div class="logo" onclick="goPage('home')">NEXUS<span>GEAR</span></div>
+    <ul>
+      <li><a onclick="goPage('home')" id="nav-home" class="active">Inicio</a></li>
+      <li><a onclick="goPage('products')" id="nav-products">Productos</a></li>
+      <li><a onclick="goPage('compare')" id="nav-compare">Comparar</a></li>
+      <li><a onclick="goPage('auth')" id="nav-auth">Login</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-nav" onclick="goPage('cart')">
+        🛒 CARRITO <span class="cart-count" id="cart-count">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== PAGE: HOME ========== -->
+  <div class="page active" id="page-home">
+
+    <div class="hero">
+      <div class="hero-text">
+        <div class="hero-tag">⚡ TEMPORADA GAMER 2026</div>
+        <h1>EQUIPA TU<span class="outline">SETUP DEFINITIVO</span></h1>
+        <p>Periféricos pro, consolas y accesorios para dominar cada partida al mejor precio.</p>
+        <button class="btn-primary" onclick="goPage('products')">VER CATÁLOGO COMPLETO</button>
+      </div>
+      <div class="hero-3d">
+        <canvas id="hero-canvas"></canvas>
+      </div>
+    </div>
+
+    <section class="section">
+      <p class="sec-label">// EXPLORAR</p>
+      <h2 class="sec-title">Categorías <span>Destacadas</span></h2>
+      <div class="cats">
+        <div class="cat" onclick="filterCat('Periféricos')">
+          <div class="cat-ico">🖱️</div>
+          <div class="cat-nm">Periféricos</div>
+          <div class="cat-ct"> productos</div>
+        </div>
+        <div class="cat" onclick="filterCat('Consolas')">
+          <div class="cat-ico">🎮</div>
+          <div class="cat-nm">Consolas</div>
+          <div class="cat-ct"> productos</div>
+        </div>
+        <div class="cat" onclick="filterCat('Monitores')">
+          <div class="cat-ico">🖥️</div>
+          <div class="cat-nm">Monitores</div>
+          <div class="cat-ct"> productos</div>
+        </div>
+        <div class="cat" onclick="filterCat('Audio')">
+          <div class="cat-ico">🎧</div>
+          <div class="cat-nm">Audio</div>
+          <div class="cat-ct"> productos</div>
+        </div>
+        <div class="cat" onclick="filterCat('Cases')">
+          <div class="cat-ico">🖥️</div>
+          <div class="cat-nm">Cases</div>
+          <div class="cat-ct"> productos</div>
+        </div>
+        <div class="cat" onclick="filterCat('PCs')">
+          <div class="cat-ico">💻</div>
+          <div class="cat-nm">PCs</div>
+          <div class="cat-ct"> productos</div>
+        </div>
+      </div>
+
+      <p class="sec-label">// DESTACADOS</p>
+      <h2 class="sec-title">Más <span>Vendidos</span></h2>
+      <div class="pgrid" id="home-grid"></div>
+    </section>
+
+    <!-- PROMO BANNER -->
+    <div class="promo-banner">
+      <div class="promo-text">
+        <h2>⚡ FLASH SALE — 48 HORAS</h2>
+        <p>Hasta 40% OFF en periféricos seleccionados.</p>
+      </div>
+      <div class="countdown">
+        <div class="cd-block"><span class="cd-num" id="ch">47</span><span class="cd-lbl">Horas</span></div>
+        <div class="cd-block"><span class="cd-num" id="cm">23</span><span class="cd-lbl">Mins</span></div>
+        <div class="cd-block"><span class="cd-num" id="cs">59</span><span class="cd-lbl">Segs</span></div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="logo" style="font-size:16px">NEXUS<span style="color:var(--np)">GEAR</span></div>
+      <span>© 2025 NexusGear · Todos los derechos reservados</span>
+      <span style="color:var(--nc)">RD · Santo Domingo</span>
+    </footer>
+  </div>
+
+  <!-- ========== PAGE: PRODUCTS ========== -->
+  <div class="page" id="page-products">
+    <section class="section">
+      <p class="sec-label">// CATÁLOGO</p>
+      <h2 class="sec-title">Todos los <span>Productos</span></h2>
+      <div class="filters">
+        <input class="search-box" id="search" placeholder="🔍 Buscar producto..." oninput="renderProducts()">
+        <select class="fsel" id="fcat" onchange="renderProducts()">
+          <option value="">Todas las categorías</option>
+          <option>Periféricos</option>
+          <option>Consolas</option>
+          <option>Monitores</option>
+          <option>Audio</option>
+          <option>Sillas</option>
+          <option>Cases</option>
+          <option>PCs</option>
+        </select>
+        <select class="fsel" id="fsort" onchange="renderProducts()">
+          <option value="">Ordenar por</option>
+          <option value="price-asc">Precio: menor</option>
+          <option value="price-desc">Precio: mayor</option>
+          <option value="rating">Mejor valorados</option>
+        </select>
+        <label class="fchk">
+          <input type="checkbox" id="fonSale" onchange="renderProducts()"> Solo ofertas
+        </label>
+      </div>
+      <div class="compare-bar" id="compare-bar">
+        <span id="cmp-info" style="font-size:13px;color:var(--np)">Selecciona hasta 3 productos para comparar</span>
+        <button class="btn-nav" onclick="goPage('compare')">COMPARAR →</button>
+      </div>
+      <div class="pgrid" id="products-grid"></div>
+    </section>
+  </div>
+
+  <!-- ========== PAGE: CART ========== -->
+  <div class="page" id="page-cart">
+    <div id="cart-content"></div>
+  </div>
+
+  <!-- ========== PAGE: AUTH ========== -->
+  <div class="page" id="page-auth">
+    <div class="auth-wrap">
+      <div class="auth-box">
+        <div class="auth-title">NEXUS<span style="color:var(--np)">GEAR</span></div>
+        <div class="auth-sub">Accede a tu cuenta gamer</div>
+        <div class="auth-tab">
+          <button class="active" onclick="switchTab('login', this)">LOGIN</button>
+          <button onclick="switchTab('register', this)">REGISTRO</button>
+        </div>
+        <!-- Login Form -->
+        <div id="form-login">
+          <div class="field"><label>Email</label><input type="email" placeholder="gamer@nexus.com"></div>
+          <div class="field"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+          <button class="btn-auth" onclick="doLogin()">INICIAR SESIÓN</button>
+        </div>
+        <!-- Register Form -->
+        <div id="form-register" style="display:none">
+          <div class="field"><label>Usuario</label><input type="text" placeholder="ProGamer99"></div>
+          <div class="field"><label>Email</label><input type="email" placeholder="gamer@nexus.com"></div>
+          <div class="field"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+          <div class="field"><label>Confirmar Contraseña</label><input type="password" placeholder="••••••••"></div>
+          <button class="btn-auth" onclick="doRegister()">CREAR CUENTA</button>
+        </div>
+        <div class="auth-divider">o continúa con</div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn-nav" style="flex:1" onclick="showToast('Google login próximamente')">🔵 Google</button>
+          <button class="btn-nav" style="flex:1" onclick="showToast('Discord login próximamente')">🟣 Discord</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PAGE: CHECKOUT ========== -->
+  <div class="page" id="page-checkout">
+    <section class="section">
+      <p class="sec-label">// PAGO</p>
+      <h2 class="sec-title">Finalizar <span>Compra</span></h2>
+    </section>
+    <div class="checkout-wrap">
+      <div>
+        <div class="form-section">
+          <div class="fs-title">INFORMACIÓN DE ENVÍO</div>
+          <div class="form-grid">
+            <div class="field"><label>Nombre</label><input type="text" placeholder="Juan"></div>
+            <div class="field"><label>Apellido</label><input type="text" placeholder="Pérez"></div>
+            <div class="field full"><label>Dirección</label><input type="text" placeholder="Calle Principal #123"></div>
+            <div class="field"><label>Ciudad</label><input type="text" placeholder="Santo Domingo"></div>
+            <div class="field"><label>Teléfono</label><input type="text" placeholder="+1 (809) 000-0000"></div>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="fs-title">MÉTODO DE PAGO</div>
+          <div style="display:flex;gap:10px;margin-bottom:16px">
+            <button class="btn-nav" id="pm-card" onclick="selectPM('card', this)" style="flex:1">💳 Tarjeta</button>
+            <button class="btn-nav" id="pm-paypal" onclick="selectPM('paypal', this)" style="flex:1">🅿️ PayPal</button>
+            <button class="btn-nav" id="pm-crypto" onclick="selectPM('crypto', this)" style="flex:1">₿ Crypto</button>
+          </div>
+          <div id="pm-fields">
+            <div class="form-grid">
+              <div class="field full"><label>Número de tarjeta</label><input type="text"
+                  placeholder="1234 5678 9012 3456"></div>
+              <div class="field"><label>Vence</label><input type="text" placeholder="MM/AA"></div>
+              <div class="field"><label>CVV</label><input type="text" placeholder="123"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cart-summary">
+          <div class="cs-title">RESUMEN DE PEDIDO</div>
+          <div id="checkout-items"></div>
+          <div class="cs-row total">
+            <span>TOTAL</span>
+            <span class="cv" id="checkout-total">$0.00</span>
+          </div>
+          <button class="btn-checkout" onclick="doCheckout()">✓ CONFIRMAR PEDIDO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PAGE: COMPARE ========== -->
+  <div class="page" id="page-compare">
+    <section class="section">
+      <p class="sec-label">// ANÁLISIS</p>
+      <h2 class="sec-title">Comparar <span>Productos</span></h2>
+      <div id="compare-content"></div>
+    </section>
+  </div>
+
+  <!-- ========== MODAL PRODUCTO ========== -->
+  <div class="overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal-box">
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      <div class="modal-body">
+        <div class="modal-img" id="m-img"></div>
+        <div class="modal-info">
+          <div class="modal-brand" id="m-brand"></div>
+          <div class="modal-name" id="m-name"></div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
+            <div class="modal-price" id="m-price"></div>
+            <span id="m-old" style="font-size:13px;color:var(--td);text-decoration:line-through"></span>
+          </div>
+          <div style="color:#ffcc00;font-size:13px;margin-bottom:14px" id="m-stars"></div>
+          <div class="modal-specs" id="m-specs"></div>
+          <button class="btn-modal-add" onclick="addFromModal()">+ AGREGAR AL CARRITO</button>
+        </div>
+      </div>
+      <div class="modal-reviews">
+        <div class="rev-title">// RESEÑAS DE USUARIOS</div>
+        <div id="m-reviews"></div>
+        <div class="rev-form">
+          <div
+            style="font-family:'Orbitron',monospace;font-size:11px;letter-spacing:1px;color:var(--td);margin-bottom:8px">
+            DEJAR RESEÑA</div>
+          <div class="star-selector" id="star-sel">
+            <span onclick="setStars(1)">★</span>
+            <span onclick="setStars(2)">★</span>
+            <span onclick="setStars(3)">★</span>
+            <span onclick="setStars(4)">★</span>
+            <span onclick="setStars(5)">★</span>
+          </div>
+          <textarea id="rev-input" placeholder="Comparte tu experiencia con este producto..."></textarea>
+          <button class="btn-rev" onclick="submitReview()">PUBLICAR RESEÑA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="java.js"></script>
+  <script src="hero3d.js"></script>
+
+</body>
+
+</html>
