@@ -172,6 +172,7 @@ let countdownSecs = 47 * 3600 + 23 * 60 + 59;
 //   NAVEGACIÓN
 // =============================================
 function goPage(p) {
+  closeMobileMenu();
   document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
   document.querySelectorAll('nav ul a').forEach(x => x.classList.remove('active'));
 
@@ -298,7 +299,12 @@ function addCart(e, id) {
 
 function updateCartCount() {
   const total = cart.reduce((sum, x) => sum + x.qty, 0);
-  document.getElementById('cart-count').textContent = total;
+  const badge = document.getElementById('cart-count');
+  badge.textContent = total;
+  // Trigger bounce animation
+  badge.classList.remove('bounce');
+  void badge.offsetWidth; // force reflow
+  badge.classList.add('bounce');
 }
 
 function changeQty(id, delta) {
@@ -694,8 +700,129 @@ setInterval(() => {
 }, 1000);
 
 // =============================================
+//   NAVBAR: SCROLL SHRINK
+// =============================================
+function initScrollShrink() {
+  const nav = document.getElementById('navbar');
+  if (!nav) return;
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+}
+
+// =============================================
+//   NAVBAR: MOBILE MENU TOGGLE
+// =============================================
+function toggleMobileMenu() {
+  const menu = document.getElementById('nav-menu');
+  const toggle = document.getElementById('menu-toggle');
+  menu.classList.toggle('mobile-open');
+  toggle.classList.toggle('open');
+}
+
+function closeMobileMenu() {
+  const menu = document.getElementById('nav-menu');
+  const toggle = document.getElementById('menu-toggle');
+  if (menu) menu.classList.remove('mobile-open');
+  if (toggle) toggle.classList.remove('open');
+}
+
+// =============================================
+//   SCROLL TO CONTACT
+// =============================================
+function scrollToContact() {
+  closeMobileMenu();
+  // Make sure we're on the home page first
+  const homePage = document.getElementById('page-home');
+  if (!homePage.classList.contains('active')) {
+    goPage('home');
+    // Wait for the page to render before scrolling
+    setTimeout(function() {
+      const el = document.getElementById('section-contact');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  } else {
+    const el = document.getElementById('section-contact');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// =============================================
+//   CONTACT FORM
+// =============================================
+function handleContactForm(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const subject = document.getElementById('c-subject').value;
+  const msg = document.getElementById('c-msg').value.trim();
+
+  if (!name || !email || !subject || !msg) {
+    showToast('⚠ Completa todos los campos');
+    return;
+  }
+
+  if (!email.includes('@') || !email.includes('.')) {
+    showToast('⚠ Ingresa un email válido');
+    return;
+  }
+
+  const btn = document.getElementById('btn-submit-contact');
+  btn.classList.add('sending');
+  btn.querySelector('.btn-text').textContent = 'ENVIANDO...';
+
+  setTimeout(function() {
+    btn.classList.remove('sending');
+    btn.classList.add('sent');
+    btn.querySelector('.btn-text').textContent = '✓ MENSAJE ENVIADO';
+
+    // Reset form
+    document.getElementById('contact-form').reset();
+
+    showToast('✓ ¡Mensaje enviado con éxito!');
+
+    setTimeout(function() {
+      btn.classList.remove('sent');
+      btn.querySelector('.btn-text').textContent = 'ENVIAR MENSAJE';
+    }, 3000);
+  }, 1500);
+}
+
+// =============================================
+//   NEWSLETTER
+// =============================================
+function subscribeNewsletter() {
+  const input = document.getElementById('news-email');
+  const email = input.value.trim();
+
+  if (!email) {
+    showToast('⚠ Ingresa tu email');
+    return;
+  }
+
+  if (!email.includes('@') || !email.includes('.')) {
+    showToast('⚠ Email no válido');
+    return;
+  }
+
+  input.value = '';
+  showToast('✓ ¡Suscrito! Recibirás ofertas exclusivas');
+}
+
+// =============================================
 //   INICIALIZACIÓN
 // =============================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   renderGrid('home-grid', PRODUCTS, true);
+  initScrollShrink();
+
+  // Close mobile menu when a nav link is clicked
+  document.querySelectorAll('#nav-menu a').forEach(function(link) {
+    link.addEventListener('click', closeMobileMenu);
+  });
 });

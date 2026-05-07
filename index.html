@@ -17,17 +17,22 @@
 <body>
 
   <!-- ===== NAVBAR ===== -->
-  <nav>
+  <nav id="navbar">
     <div class="logo" onclick="goPage('home')">NEXUS<span>GEAR</span></div>
-    <ul>
+    <ul id="nav-menu">
       <li><a onclick="goPage('home')" id="nav-home" class="active">Inicio</a></li>
       <li><a onclick="goPage('products')" id="nav-products">Productos</a></li>
       <li><a onclick="goPage('compare')" id="nav-compare">Comparar</a></li>
+      <li><a onclick="scrollToContact()" id="nav-contact">Contacto</a></li>
       <li><a onclick="goPage('auth')" id="nav-auth">Login</a></li>
     </ul>
     <div class="nav-right">
-      <button class="btn-nav" onclick="goPage('cart')">
-        🛒 CARRITO <span class="cart-count" id="cart-count">0</span>
+      <button class="btn-cart" onclick="goPage('cart')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cart-icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+      <button class="menu-toggle" id="menu-toggle" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
@@ -104,10 +109,128 @@
       </div>
     </div>
 
-    <footer>
-      <div class="logo" style="font-size:16px">NEXUS<span style="color:var(--np)">GEAR</span></div>
-      <span>© 2025 NexusGear · Todos los derechos reservados</span>
-      <span style="color:var(--nc)">RD · Santo Domingo</span>
+    <!-- ===== CONTACTO FUTURISTA ===== -->
+    <section class="section contact-section" id="section-contact">
+      <div class="contact-grid">
+        <!-- Info Panel -->
+        <div class="contact-info">
+          <h2 class="contact-title">Conecta con <span class="gradient-text">Nosotros</span></h2>
+          <p class="contact-subtitle">Estamos aquí para elevar tu experiencia gaming. Contáctanos para soporte o dudas.</p>
+          
+          <div class="contact-cards">
+            <div class="ccard">
+              <div class="ccard-icon">✉️</div>
+              <div class="ccard-text">
+                <div class="c-lbl">Email</div>
+                <div class="c-val">luismanuelmatosmartes99@gmail.com</div>
+              </div>
+            </div>
+            <div class="ccard">
+              <div class="ccard-icon">📱</div>
+              <div class="ccard-text">
+                <div class="c-lbl">Teléfono</div>
+                <div class="c-val">8496287528</div>
+              </div>
+            </div>
+            <div class="ccard">
+              <div class="ccard-icon">📍</div>
+              <div class="ccard-text">
+                <div class="c-lbl">Ubicación</div>
+                <div class="c-val">Plaza Central, Local 4B, SD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Panel -->
+        <div class="contact-form-wrapper">
+          <div class="glow-orb"></div>
+          <form id="contact-form" class="contact-form" onsubmit="handleContactForm(event)">
+            <div class="form-row">
+              <div class="field">
+                <label>Nombre</label>
+                <input type="text" id="c-name" placeholder="Tu nombre" required>
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="c-email" placeholder="tu@email.com" required>
+              </div>
+            </div>
+            <div class="field">
+              <label>Asunto</label>
+              <select id="c-subject" class="c-select" required>
+                <option value="" disabled selected>Selecciona un asunto</option>
+                <option value="Soporte Técnico">Soporte Técnico</option>
+                <option value="Ventas">Ventas y Envíos</option>
+                <option value="Garantías">Devoluciones / Garantías</option>
+                <option value="Otros">Otros</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Mensaje</label>
+              <textarea id="c-msg" placeholder="Escribe tu mensaje aquí..." required></textarea>
+            </div>
+            <button type="submit" class="btn-submit" id="btn-submit-contact">
+              <span class="btn-text">ENVIAR MENSAJE</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER PREMIUM ===== -->
+    <footer class="footer-premium">
+      <div class="footer-top">
+        <div class="f-col brand-col">
+          <div class="logo">NEXUS<span>GEAR</span></div>
+          <p class="f-desc">Equipamiento de alto rendimiento para gamers exigentes. Domina el juego con la mejor tecnología.</p>
+        </div>
+        <div class="f-col">
+          <h4 class="f-title">Navegación</h4>
+          <ul class="f-links">
+            <li><a onclick="goPage('home')">Inicio</a></li>
+            <li><a onclick="goPage('products')">Catálogo</a></li>
+            <li><a onclick="goPage('compare')">Comparar</a></li>
+            <li><a onclick="goPage('auth')">Mi Cuenta</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4 class="f-title">Categorías</h4>
+          <ul class="f-links">
+            <li><a onclick="filterCat('Periféricos')">Periféricos</a></li>
+            <li><a onclick="filterCat('PCs')">PCs y Laptops</a></li>
+            <li><a onclick="filterCat('Monitores')">Monitores 360Hz</a></li>
+            <li><a onclick="filterCat('Consolas')">Consolas Next-Gen</a></li>
+          </ul>
+        </div>
+        <div class="f-col newsletter-col">
+          <h4 class="f-title">Únete a la Élite</h4>
+          <p class="f-sub">Recibe ofertas exclusivas y noticias.</p>
+          <div class="newsletter-box">
+            <input type="email" id="news-email" placeholder="Ingresa tu email">
+            <button onclick="subscribeNewsletter()" class="btn-news">➔</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-middle">
+        <div class="social-links">
+          <a class="s-link" title="Discord">👾</a>
+          <a class="s-link" title="Twitter/X">𝕏</a>
+          <a class="s-link" title="Instagram">📸</a>
+          <a class="s-link" title="YouTube">▶️</a>
+          <a class="s-link" title="Twitch">🟪</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="f-copy">© 2026 NexusGear. Todos los derechos reservados.</div>
+        <div class="f-legal">
+          <a>Privacidad</a>
+          <a>Términos</a>
+        </div>
+        <div class="f-location">🏴 Santo Domingo, RD</div>
+      </div>
     </footer>
   </div>
 
